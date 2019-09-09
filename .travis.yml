@@ -1,0 +1,37 @@
+###################################################################################
+#                                                                                 #
+# NAME: .travis.yml                                                               #
+#                                                                                 #
+# AUTHOR: Michael Brockus.                                                        #
+#                                                                                 #
+# CONTACT: <mailto:michael@squidfarts.com>                                        #
+#                                                                                 #
+# NOTICES:                                                                        #
+#                                                                                 #
+# License: Apache 2.0 :http://www.apache.org/licenses/LICENSE-2.0                 #
+#                                                                                 #
+###################################################################################
+sudo: false
+dist: xenial
+d:
+  - dmd
+  - dmd-2.075.0
+  - ldc
+
+branches:
+  only:
+  - master  
+
+install:
+  - sudo apt-get install python3-pip python3-setuptools
+  - python3 .ci/install.py
+
+before_script:
+  export PATH=$PATH:$PWD/.ntmp
+
+script:
+  # note: for dlang project tester, which doesn't clone automatically
+  - python3 .ci/build.py && python3 .ci/test.py
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
